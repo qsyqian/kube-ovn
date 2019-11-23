@@ -6,7 +6,7 @@ ROLES=node controller cni db webhook pinger
 DEV_TAG=dev
 RELEASE_TAG=$(shell cat VERSION)
 
-.PHONY: build-dev-images build-go build-bin test lint up down halt suspend resume
+.PHONY: build-dev-images build-go build-bin test lint up down halt suspend resume kind
 
 build-dev-images: build-bin
 	@for role in ${ROLES} ; do \
@@ -59,3 +59,9 @@ resume:
 
 suspend:
 	cd vagrant && vagrant suspend
+
+kind:
+	kind create cluster --config yamls/kind.yaml
+	kubectl apply -f yamls/crd.yaml
+	kubectl apply -f yamls/ovn.yaml
+	kubectl apply -f yamls/kube-ovn.yaml
