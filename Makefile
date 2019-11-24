@@ -62,6 +62,10 @@ suspend:
 
 kind:
 	kind create cluster --config yamls/kind.yaml
+	@for role in ${ROLES} ; do \
+		kind load docker-image ${REGISTRY}/kube-ovn-$$role:${RELEASE_TAG}; \
+	done
+	kubectl label node kind-control-plane kube-ovn/role=master
 	kubectl apply -f yamls/crd.yaml
 	kubectl apply -f yamls/ovn.yaml
 	kubectl apply -f yamls/kube-ovn.yaml
